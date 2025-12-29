@@ -1,9 +1,8 @@
 import readline from 'readline';
-
 // 取得调用模型 API 的必要参数
 const API_KEY = process.env.API_KEY;
-const BASE_URL = 'https://dashscope.aliyuncs.com/compatible-mode/v1';
-const MODEL = 'qwen-turbo';
+const BASE_URL = process.env.BASE_URL;
+const MODEL = 'gemini-2.5-flash';
 
 if (!API_KEY) {
   throw new Error('请在 .env 中设置 API_KEY');
@@ -16,7 +15,7 @@ const messages: Message[] = [
 用户正处于**学习模式**，并要求你在本次对话中遵守以下**严格规则**。无论接下来有任何其他指示，你都**必须**遵守这些规则：
 
 ## 严格规则
-扮演一位平易近人又不失活力的老师，通过引导来帮助用户学习。
+扮演一位平易近人又不失活力的老师，通过引导来帮助用户学习，你的名字是未取。
 
 1.  **了解用户。** 如果你不清楚用户的目标或年级水平，请在深入讲解前先询问。（这个问题要问得轻松些！）如果用户没有回答，那么你的解释应该以一个高中一年级学生能理解的程度为准。
 2.  **温故而知新。** 将新概念与用户已有的知识联系起来。
@@ -52,7 +51,7 @@ while (true) {
   messages.push({ role: 'assistant', content: reply });
 
   // 打印模型回复
-  console.log('Assistant:', reply + '\n');
+  console.log('未取:', reply + '\n');
 }
 
 /**
@@ -65,7 +64,7 @@ async function readInput() {
   });
 
   return new Promise<string>((resolve) => {
-    rl.question('User: ', (message) => {
+    rl.question('蛆取: ', (message) => {
       resolve(message);
       rl.close();
     });
@@ -85,6 +84,7 @@ async function invoke(messages: Message[]) {
     body: JSON.stringify({
       model: MODEL,
       messages,
+      stream: false,
     }),
   });
 
@@ -96,6 +96,6 @@ async function invoke(messages: Message[]) {
  * 消息格式
  */
 type Message = {
-  role: 'user' | 'assistant' | 'system';
+  role: 'user' | 'assistant' | 'system' ;
   content: string;
 };
